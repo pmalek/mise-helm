@@ -1,0 +1,48 @@
+name: tests
+run-name: tests, branch:${{ github.ref_name }}, triggered by @${{ github.actor }}
+
+concurrency:
+  # Run only for most recent commit in PRs but for all tags and commits on main
+  # Ref: https://docs.github.com/en/actions/using-jobs/using-concurrency
+  group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
+  cancel-in-progress: true
+
+on:
+  merge_group:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - '**'
+      - 'release/*'
+  push:
+    branches:
+      - 'main'
+      - 'release/*'
+    tags:
+      - '*'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  attestations: read
+
+env:
+  MISE_VERBOSE: 1
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
+    - uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v6.1.0
+      with:
+        go-version-file: go.mod
+
+    - uses: jdx/mise-action@146a28175021df8ca24f8ee1828cc2a60f980bd5 # v3.5.1
+      with:
+        install: false
+
+    - run: make download.helm
+    - run: go run main.go
