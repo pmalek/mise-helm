@@ -52,5 +52,5 @@ jobs:
         working_directory: ${{ matrix.directory }}
 
     - run: make download.helm
-    - run: go run ${{ github.workspace }}/main.go
+    - run: go run ${{ github.workspace }}
       working-directory: ${{ matrix.directory }}

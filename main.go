@@ -3,17 +3,14 @@ package main
 import (
 	"bytes"
 	"context"
-	"os/exec"
 )
 
 func main() {
 	ctx := context.Background()
-	cmd := exec.CommandContext(ctx, "helm", "version")
 	stdout := bytes.Buffer{}
-	cmd.Stdout = &stdout
 	stderr := bytes.Buffer{}
-	cmd.Stderr = &stderr
-	err := cmd.Run()
+	cmd := Command("helm", "version").WithStderr(&stderr).WithStdout(&stdout)
+	err := cmd.Do(ctx)
 	if err != nil {
 		panic(err)
 	}
