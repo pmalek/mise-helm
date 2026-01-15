@@ -32,7 +32,13 @@ env:
 
 jobs:
   run:
+    
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        directory:
+          - dir
+          - .
     steps:
     - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
@@ -45,4 +51,5 @@ jobs:
         install: false
 
     - run: make download.helm
-    - run: go run main.go
+    - run: go run ${{ github.workspace }}/main.go
+      working-directory: ${{ matrix.directory }} 
