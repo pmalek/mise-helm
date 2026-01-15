@@ -49,7 +49,8 @@ jobs:
     - uses: jdx/mise-action@146a28175021df8ca24f8ee1828cc2a60f980bd5 # v3.5.1
       with:
         install: false
+        working_directory: ${{ matrix.directory }}
 
     - run: make download.helm
     - run: go run ${{ github.workspace }}/main.go
-      working-directory: ${{ matrix.directory }} 
+      working-directory: ${{ matrix.directory }}
